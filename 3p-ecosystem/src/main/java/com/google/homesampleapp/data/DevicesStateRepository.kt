@@ -102,6 +102,36 @@ class DevicesStateRepository @Inject constructor(@ApplicationContext context: Co
     }
   }
 
+    suspend fun updateDeviceStateForMyOnOffCluster(deviceId: Long, isOnline: Boolean, isOn: Boolean) {
+        val newDeviceState =
+            DeviceState.newBuilder()
+                .setDeviceId(deviceId)
+                .setDateCaptured(getTimestampForNow())
+                .setOnline(isOnline)
+                .setOn(isOn)
+                .build()
+
+        val devicesState = devicesStateFlow.first()
+        val devicesStateCount = devicesState.devicesStateCount
+        var updateDone = false
+        for (index in 0 until devicesStateCount) {
+            val deviceState = devicesState.getDevicesState(index)
+            if (deviceId == deviceState.deviceId) {
+                devicesStateDataStore.updateData { devicesStateList ->
+                    devicesStateList.toBuilder().setDevicesState(index, newDeviceState).build()
+                }
+                _lastUpdatedDeviceState.value = newDeviceState
+                updateDone = true
+                break
+            }
+        }
+        if (!updateDone) {
+            Timber.w(
+                "We did not find device [${deviceId}] in devicesStateRepository; it should have been there???")
+            addDeviceState(deviceId, isOnline = isOnline, isOn = isOn)
+        }
+    }
+
   suspend fun getAllDevicesState(): DevicesState {
     return devicesStateFlow.first()
   }

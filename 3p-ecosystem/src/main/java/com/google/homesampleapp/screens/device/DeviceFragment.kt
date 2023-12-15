@@ -224,6 +224,11 @@ class DeviceFragment : Fragment() {
           }
           .show()
     }
+
+    binding.getDeviceInfo.setOnClickListener {
+      val deviceId = selectedDeviceViewModel.selectedDeviceIdLiveData.value
+      viewModel.getDeviceInfo(deviceId!!)
+    }
   }
 
   private fun showBackgroundWorkAlertDialog(title: String?, message: String?) {
@@ -328,6 +333,17 @@ class DeviceFragment : Fragment() {
         }
         viewModel.consumeUiActionLiveData()
       }
+    }
+
+    viewModel.deviceInfo.observe(viewLifecycleOwner){
+      var msg = ""
+      it.forEach { deviceMatterInfo ->
+        msg += "End Point" + deviceMatterInfo.endpoint
+
+        msg += "Client Clusters" + deviceMatterInfo.clientClusters
+      }
+
+      binding.deviceInfo.text = msg
     }
   }
 

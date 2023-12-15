@@ -323,11 +323,11 @@ class ChipClient @Inject constructor(@ApplicationContext context: Context) {
     return suspendCoroutine { continuation ->
       val callback: ReportCallback =
           object : ReportCallback {
-            override fun onError(
-                attributePath: ChipAttributePath?,
-                eventPath: ChipEventPath?,
-                e: Exception?
-            ) {
+              override fun onError(
+                  attributePath: ChipAttributePath?,
+                  eventPath: ChipEventPath?,
+                  e: java.lang.Exception
+              )  {
               continuation.resumeWithException(IllegalStateException("readAttributes failed", e))
             }
 
@@ -348,7 +348,7 @@ class ChipClient @Inject constructor(@ApplicationContext context: Context) {
               super.onDone()
             }
           }
-      chipDeviceController.readAttributePath(callback, devicePtr, attributePaths)
+      chipDeviceController.readAttributePath(callback, devicePtr, attributePaths, 100)
     }
   }
 
@@ -367,7 +367,7 @@ class ChipClient @Inject constructor(@ApplicationContext context: Context) {
           devicePtr,
           listOf(attributePath),
           minInterval,
-          maxInterval)
+          maxInterval, 100)
     }
   }
 

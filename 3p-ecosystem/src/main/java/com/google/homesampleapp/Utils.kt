@@ -309,10 +309,10 @@ enum class StateChangesMonitoringMode {
   PeriodicRead
 }
 
-val STATE_CHANGES_MONITORING_MODE = StateChangesMonitoringMode.Subscription
+val STATE_CHANGES_MONITORING_MODE = StateChangesMonitoringMode.PeriodicRead
 
 // Intervals for PeriodicRead mode.
-const val PERIODIC_READ_INTERVAL_HOME_SCREEN_SECONDS = 10
+const val PERIODIC_READ_INTERVAL_HOME_SCREEN_SECONDS = 2
 const val PERIODIC_READ_INTERVAL_DEVICE_SCREEN_SECONDS = 2
 
 // ----- Device Sharing -----

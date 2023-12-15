@@ -14,66 +14,132 @@
  limitations under the License.
 -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/device_item_shape_off"
-    android:layout_marginVertical="5dp"
     android:layout_marginHorizontal="16dp"
-    >
-    <ImageView
-        android:id="@+id/zeicon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:paddingHorizontal="16dp"
-        android:contentDescription="@string/light_off"
-        android:src="@drawable/quantum_gm_ic_lights_gha_vd_theme_24" />
+    android:layout_marginVertical="5dp"
+    android:background="@drawable/device_item_shape_off">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/zeicon"
-        android:layout_centerVertical="true"
-        android:gravity="center_vertical"
         android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
-        android:layout_toEndOf="@id/zeicon"
-        android:maxLines="1"
-        android:textAppearance="?attr/textAppearanceSubtitle1"
-        android:textColor="@color/mtrl_list_item_tint"
-        tools:text="Light A"
-        />
+        <LinearLayout
+            android:id="@+id/onOffLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="15dp"
+            android:weightSum="3">
 
-    <TextView
-        android:id="@+id/zestate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name"
-        android:layout_toEndOf="@id/zeicon"
-        android:paddingEnd="16dp"
-        android:maxLines="2"
-        android:textAppearance="?attr/textAppearanceBody2"
-        android:textColor="@color/mtrl_list_item_tint"
-        tools:text="Online OFF"
-        />
+            <ImageView
+                android:id="@+id/zeicon"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/light_off"
+                android:src="@drawable/quantum_gm_ic_lights_gha_vd_theme_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1.75"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingHorizontal="16dp"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/mtrl_list_item_tint"
+                    tools:text="Light A" />
+
+                <TextView
+                    android:id="@+id/zestate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:paddingHorizontal="16dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@color/mtrl_list_item_tint"
+                    tools:text="Online OFF" />
+            </LinearLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/onoff_switch"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"/>
+
+        <LinearLayout
+            android:id="@+id/myOnOffLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="15dp"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/zeiconMyOnOff"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/light_off"
+                android:src="@drawable/quantum_gm_ic_lights_gha_vd_theme_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1.75"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/nameMyOnOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingHorizontal="16dp"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/mtrl_list_item_tint"
+                    tools:text="Light A" />
+
+                <TextView
+                    android:id="@+id/zestateMyOnOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:paddingHorizontal="16dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@color/mtrl_list_item_tint"
+                    tools:text="Online OFF" />
+            </LinearLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/my_onoff_switch"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </LinearLayout>
     </LinearLayout>
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/onoff_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:paddingHorizontal="10dp"
-        />
 
 </RelativeLayout>

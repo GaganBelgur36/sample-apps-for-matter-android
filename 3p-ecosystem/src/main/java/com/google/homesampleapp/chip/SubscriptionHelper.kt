@@ -53,7 +53,7 @@ class SubscriptionHelper @Inject constructor(private val chipClient: ChipClient)
           // fabric-scoped,
           // i.e. isFabricFiltered = false, to allow reading all values not just the one for the
           // current fabric
-          false)
+          false, 100)
       continuation.resume(Unit)
     }
   }
@@ -121,10 +121,13 @@ class SubscriptionHelper @Inject constructor(private val chipClient: ChipClient)
 
   open class ResubscriptionAttemptCallbackForDevice(val deviceId: Long) :
       ResubscriptionAttemptCallback {
-    override fun onResubscriptionAttempt(terminationCause: Int, nextResubscribeIntervalMsec: Int) {
-      Timber.d(
-          "onResubscriptionAttempt(): device [$deviceId] terminationCause [$terminationCause] nextResubscribeIntervalMsec [$nextResubscribeIntervalMsec]")
-    }
+      override fun onResubscriptionAttempt(
+          terminationCause: Long,
+          nextResubscribeIntervalMsec: Long
+      ) {
+          Timber.d(
+              "onResubscriptionAttempt(): device [$deviceId] terminationCause [$terminationCause] nextResubscribeIntervalMsec [$nextResubscribeIntervalMsec]")
+      }
   }
 }
 
@@ -149,7 +152,7 @@ fun nodeStateToDebugString(nodeState: NodeState): String {
         eventStates.forEach { eventState ->
           stringBuilder.append("\t\teventNumber: ${eventState.eventNumber}\n")
           stringBuilder.append("\t\tpriorityLevel: ${eventState.priorityLevel}\n")
-          stringBuilder.append("\t\tsystemTimeStamp: ${eventState.systemTimeStamp}\n")
+          stringBuilder.append("\t\tsystemTimeStamp: ${eventState.timestampValue}\n")
           val eventName = ChipIdLookup.eventIdToName(clusterId, eventId)
           stringBuilder.append("\t\t[${eventId}] [${eventName}] ${eventState.value}\n")
         }

@@ -43,6 +43,7 @@ import com.google.homesampleapp.TaskStatus
 import com.google.homesampleapp.UiAction
 import com.google.homesampleapp.chip.ChipClient
 import com.google.homesampleapp.chip.ClustersHelper
+import com.google.homesampleapp.chip.DeviceMatterInfo
 import com.google.homesampleapp.chip.MatterConstants.OnOffAttribute
 import com.google.homesampleapp.chip.SubscriptionHelper
 import com.google.homesampleapp.data.DevicesRepository
@@ -101,6 +102,11 @@ constructor(
   private val _uiActionLiveData = MutableLiveData<UiAction?>()
   val uiActionLiveData: LiveData<UiAction?>
     get() = _uiActionLiveData
+
+  private val _deviceInfo =
+    MutableLiveData<MutableList<DeviceMatterInfo>>()
+  val deviceInfo: LiveData<MutableList<DeviceMatterInfo>>
+    get() = _deviceInfo
 
   fun consumeUiActionLiveData() {
     _uiActionLiveData.postValue(null)
@@ -283,6 +289,22 @@ constructor(
       Timber.d("Handling real device")
       try {
         clustersHelper.setOnOffDeviceStateOnOffCluster(deviceUiModel.device.deviceId, isOn, 1)
+        devicesStateRepository.updateDeviceState(deviceUiModel.device.deviceId, true, isOn)
+      } catch (e: Throwable) {
+        Timber.e("Failed setting on/off state")
+      }
+      // CODELAB SECTION END
+    }
+  }
+fun updateDeviceStateOnMyOnOffCluster(deviceUiModel: DeviceUiModel, isOn: Boolean) {
+    Timber.d("updateDeviceStateOn: isOn [${isOn}]")
+    val deviceId = deviceUiModel.device.deviceId
+    viewModelScope.launch {
+
+      // CODELAB: toggle
+      Timber.d("Handling real device")
+      try {
+        clustersHelper.setMyOnOffDeviceStateOnOffCluster(deviceUiModel.device.deviceId, isOn, 1)
         devicesStateRepository.updateDeviceState(deviceUiModel.device.deviceId, true, isOn)
       } catch (e: Throwable) {
         Timber.e("Failed setting on/off state")
@@ -539,6 +561,16 @@ constructor(
         devicesStateRepository.updateDeviceState(
             deviceUiModel.device.deviceId, isOnline = isOnline, isOn = isOn == true)
         delay(PERIODIC_READ_INTERVAL_DEVICE_SCREEN_SECONDS * 1000L)
+
+        var myOn = clustersHelper.getDeviceStateMyOnOffCluster(deviceUiModel.device.deviceId, 1)
+        Timber.d("[device ping] myonoff [${myOn}]")
+
+        /*
+        devicesStateRepository.updateDeviceState(
+          deviceUiModel.device.deviceId, isOnline = isOnline, isOn = isOn == true
+        )
+         */
+        delay(PERIODIC_READ_INTERVAL_DEVICE_SCREEN_SECONDS * 1000L)
       }
     }
   }
@@ -562,6 +594,11 @@ constructor(
   // ---------------------------------------------------------------------------
   // Companion object
 
+   fun getDeviceInfo(deviceId: Long) {
+    viewModelScope.launch {
+      _deviceInfo.postValue(clustersHelper.fetchDeviceMatterInfo(deviceId).toMutableList())
+    }
+  }
   companion object {
     public const val DEVICE_REMOVAL_CONFIRM = "DEVICE_REMOVAL_CONFIRM"
     public const val DEVICE_REMOVAL_COMPLETED = "DEVICE_REMOVAL_COMPLETED"

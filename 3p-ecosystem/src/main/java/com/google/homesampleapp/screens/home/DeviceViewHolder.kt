@@ -61,16 +61,28 @@ class DeviceViewHolder(private val binding: DeviceViewItemBinding) :
         }
     val shapeDrawable =
         if (deviceUiModel.isOnline && deviceUiModel.isOn) shapeOnDrawable else shapeOffDrawable
+
     binding.zeicon.setImageResource(iconResourceId)
-    binding.name.text = deviceUiModel.device.name
+    binding.zeiconMyOnOff.setImageResource(iconResourceId)
+
+    binding.name.text = "Lightning On-Off"
+    binding.nameMyOnOff.text = "My On-Off "
+
     binding.zestate.text = stateDisplayString(deviceUiModel.isOnline, deviceUiModel.isOn)
+    binding.zestateMyOnOff.text = stateDisplayString(deviceUiModel.isOnline, deviceUiModel.isOn)
+
     binding.rootLayout.background = shapeDrawable
+
     if (ON_OFF_SWITCH_DISABLED_WHEN_DEVICE_OFFLINE) {
       binding.onoffSwitch.isEnabled = deviceUiModel.isOnline
+      binding.myOnoffSwitch.isEnabled = deviceUiModel.isOnline
     } else {
       binding.onoffSwitch.isEnabled = true
+      binding.myOnoffSwitch.isEnabled = true
     }
-    binding.onoffSwitch.isChecked = deviceUiModel.isOn
+
+    //binding.onoffSwitch.isChecked = deviceUiModel.isOn
+    //binding.myOnoffSwitch.isChecked = deviceUiModel.isOn
   }
 
   private fun getDrawable(name: String): Drawable? {

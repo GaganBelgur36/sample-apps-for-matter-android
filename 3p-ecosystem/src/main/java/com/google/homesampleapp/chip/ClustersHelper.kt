@@ -285,8 +285,8 @@ class ClustersHelper @Inject constructor(private val chipClient: ChipClient) {
     return suspendCoroutine { continuation ->
       getBasicClusterForDevice(connectedDevicePtr, endpoint)
           .readVendorIDAttribute(
-              object : ChipClusters.ApplicationBasicCluster.VendorIDAttributeCallback {
-                override fun onSuccess(value: Int?) {
+              object : ChipClusters.IntegerAttributeCallback {
+                override fun onSuccess(value: Int) {
                   continuation.resume(value)
                 }
 
@@ -559,6 +559,86 @@ class ClustersHelper @Inject constructor(private val chipClient: ChipClient) {
               })
     }
   }
+
+    suspend fun getDeviceStateMyOnOffCluster(deviceId: Long, endpoint: Int): Boolean? {
+        Timber.d("getDeviceStateMyOnOffCluster())")
+        val connectedDevicePtr =
+            try {
+                chipClient.getConnectedDevicePointer(deviceId)
+            } catch (e: IllegalStateException) {
+                Timber.e("Can't get connectedDevicePointer.")
+                return null
+            }
+        return suspendCoroutine { continuation ->
+            getMyOnOffClusterForDevice(connectedDevicePtr, endpoint)
+                .readOnOffAttribute(
+                    object : ChipClusters.BooleanAttributeCallback {
+                        override fun onSuccess(value: Boolean) {
+                            Timber.d("readOnOffAttribute success: [$value]")
+                            continuation.resume(value)
+                        }
+
+                        override fun onError(ex: Exception) {
+                            Timber.e(ex, "readOnOffAttribute command failure")
+                            continuation.resumeWithException(ex)
+                        }
+                    })
+        }
+    }
+    suspend fun setMyOnOffDeviceStateOnOffCluster(deviceId: Long, isOn: Boolean, endpoint: Int) {
+        Timber.d(
+            "setMyOnOffDeviceStateOnOffCluster() [${deviceId}] isOn [${isOn}] endpoint [${endpoint}]"
+        )
+        val connectedDevicePtr =
+            try {
+                chipClient.getConnectedDevicePointer(deviceId)
+            } catch (e: IllegalStateException) {
+                Timber.e("Can't get connectedDevicePointer.")
+                return
+            }
+        if (isOn) {
+            // ON
+            return suspendCoroutine { continuation ->
+                getMyOnOffClusterForDevice(connectedDevicePtr, endpoint)
+                    .on(
+                        object : ChipClusters.DefaultClusterCallback {
+                            override fun onSuccess() {
+                                Timber.d("Success for setOnOffDeviceStateOnOffCluster")
+                                continuation.resume(Unit)
+                            }
+
+                            override fun onError(ex: Exception) {
+                                Timber.e(ex, "Failure for setOnOffDeviceStateOnOffCluster")
+                                continuation.resumeWithException(ex)
+                            }
+                        })
+            }
+        } else {
+            // OFF
+            return suspendCoroutine { continuation ->
+                getMyOnOffClusterForDevice(connectedDevicePtr, endpoint)
+                    .off(
+                        object : ChipClusters.DefaultClusterCallback {
+                            override fun onSuccess() {
+                                Timber.d("Success for getOnOffDeviceStateOnOffCluster")
+                                continuation.resume(Unit)
+                            }
+
+                            override fun onError(ex: Exception) {
+                                Timber.e(ex, "Failure for getOnOffDeviceStateOnOffCluster")
+                                continuation.resumeWithException(ex)
+                            }
+                        })
+            }
+        }
+    }
+
+    private fun getMyOnOffClusterForDevice(
+        devicePtr: Long,
+        endpoint: Int
+    ): ChipClusters.MyOnOffCluster {
+        return ChipClusters.MyOnOffCluster(devicePtr, endpoint)
+    }
 
   private fun getOnOffClusterForDevice(devicePtr: Long, endpoint: Int): ChipClusters.OnOffCluster {
     return ChipClusters.OnOffCluster(devicePtr, endpoint)

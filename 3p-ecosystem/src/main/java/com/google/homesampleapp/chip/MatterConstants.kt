@@ -16,6 +16,8 @@
 
 package com.google.homesampleapp.chip
 
+import chip.devicecontroller.ChipClusters.MyOnOffCluster
+
 object MatterConstants {
   val DeviceTypesMap =
       mapOf<Long, String>(
@@ -62,4 +64,6 @@ object MatterConstants {
   // Well known cluster attributes
   data class ClusterAttribute(val clusterId: Long, val attributeId: Long)
   val OnOffAttribute = ClusterAttribute(6L, 0L)
+    val MyOnOffAttribute = ClusterAttribute(MyOnOffCluster.CLUSTER_ID, 0L)
+
 }

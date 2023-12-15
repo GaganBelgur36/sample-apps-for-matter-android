@@ -33,50 +33,62 @@ import com.google.homesampleapp.R
  */
 class DevicesAdapter(
     private val itemClickListener: (DeviceUiModel) -> Unit,
-    private val switchClickListener: (View, DeviceUiModel) -> Unit
+    private val switchClickListener: (View, DeviceUiModel) -> Unit,
+    private val myOnOffSwitchClickListener: (View, DeviceUiModel) -> Unit
 ) : ListAdapter<DeviceUiModel, DeviceViewHolder>(DEVICES_COMPARATOR) {
 
-  /**
-   * RecyclerView calls this method whenever it needs to create a new ViewHolder. The method creates
-   * and initializes the ViewHolder and its associated View, but does not fill in the view's
-   * contents — the ViewHolder has not yet been bound to specific data.
-   */
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
-    return DeviceViewHolder.create(parent)
-  }
-
-  /**
-   * RecyclerView calls this method to associate a ViewHolder with data. The method fetches the
-   * appropriate data and uses the data to fill in the view holder's layout. For example, if the
-   * RecyclerView displays a list of names, the method might find the appropriate name in the list
-   * and fill in the view holder's TextView widget.
-   */
-  override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
-    val repoItem = getItem(position)
-    if (repoItem != null) {
-      holder.bind(repoItem)
-      // TODO: this should be handled in onCreateViewHolder().
-      // Set onClickListener for the item in the list.
-      // See https://www.youtube.com/watch?v=GvLgWjPigmQ
-      holder.itemView.setOnClickListener { itemClickListener(repoItem) }
-      val onOffSwitch = holder.itemView.findViewById<SwitchMaterial>(R.id.onoff_switch)
-      onOffSwitch.setOnClickListener { switchClickListener(holder.itemView, repoItem) }
+    /**
+     * RecyclerView calls this method whenever it needs to create a new ViewHolder. The method creates
+     * and initializes the ViewHolder and its associated View, but does not fill in the view's
+     * contents — the ViewHolder has not yet been bound to specific data.
+     */
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
+        return DeviceViewHolder.create(parent)
     }
-  }
 
-  /**
-   * DiffUtil is a utility class that calculates the difference between two lists and outputs a list
-   * of update operations that converts the first list into the second one. It is used here to
-   * calculate updates for the RecyclerView Adapter.
-   */
-  companion object {
-    private val DEVICES_COMPARATOR =
-        object : DiffUtil.ItemCallback<DeviceUiModel>() {
-          override fun areItemsTheSame(oldItem: DeviceUiModel, newItem: DeviceUiModel): Boolean =
-              oldItem == newItem
+    /**
+     * RecyclerView calls this method to associate a ViewHolder with data. The method fetches the
+     * appropriate data and uses the data to fill in the view holder's layout. For example, if the
+     * RecyclerView displays a list of names, the method might find the appropriate name in the list
+     * and fill in the view holder's TextView widget.
+     */
+    override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
+        val repoItem = getItem(position)
+        if (repoItem != null) {
+            holder.bind(repoItem)
+            // TODO: this should be handled in onCreateViewHolder().
+            // Set onClickListener for the item in the list.
+            // See https://www.youtube.com/watch?v=GvLgWjPigmQ
+            holder.itemView.setOnClickListener { itemClickListener(repoItem) }
 
-          override fun areContentsTheSame(oldItem: DeviceUiModel, newItem: DeviceUiModel): Boolean =
-              oldItem == newItem
+
+            val onOffSwitch = holder.itemView.findViewById<SwitchMaterial>(R.id.onoff_switch)
+            onOffSwitch.setOnClickListener { switchClickListener(holder.itemView, repoItem) }
+
+            val myOnnOffSwitch = holder.itemView.findViewById<SwitchMaterial>(R.id.my_onoff_switch)
+            myOnnOffSwitch.setOnClickListener { myOnOffSwitchClickListener(holder.itemView, repoItem) }
         }
-  }
+    }
+
+    /**
+     * DiffUtil is a utility class that calculates the difference between two lists and outputs a list
+     * of update operations that converts the first list into the second one. It is used here to
+     * calculate updates for the RecyclerView Adapter.
+     */
+    companion object {
+        private val DEVICES_COMPARATOR =
+            object : DiffUtil.ItemCallback<DeviceUiModel>() {
+                override fun areItemsTheSame(
+                    oldItem: DeviceUiModel,
+                    newItem: DeviceUiModel
+                ): Boolean =
+                    oldItem == newItem
+
+                override fun areContentsTheSame(
+                    oldItem: DeviceUiModel,
+                    newItem: DeviceUiModel
+                ): Boolean =
+                    oldItem == newItem
+            }
+    }
 }
